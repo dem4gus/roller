@@ -1,21 +1,36 @@
 package roller
 
 import (
-	"errors"
 	"math/rand/v2"
 )
 
-func Roll(num, sides, modifier int) (int, error) {
-	if num < 1 {
-		return 0, errors.New("cannot roll less than one dice")
+type DiceSet struct {
+	num   int
+	sides int
+	mod   int
+}
+
+func Roll(input string) (int, error) {
+	d, err := NewDiceSet(input)
+	if err != nil {
+		return 0, err
 	}
-	if sides < 1 {
-		return 0, errors.New("dice cannot have less than one side")
+	return d.Roll(), nil
+}
+
+func NewDiceSet(input string) (*DiceSet, error) {
+	num, sides, mod, err := parse(input)
+	if err != nil {
+		return nil, err
 	}
 
-	result := 0
-	for range num {
-		result += rand.N(sides) + 1
+	return &DiceSet{num, sides, mod}, nil
+}
+
+func (d DiceSet) Roll() int {
+	result := d.mod
+	for range d.num {
+		result += rand.N(d.sides) + 1
 	}
-	return result + modifier, nil
+	return result
 }

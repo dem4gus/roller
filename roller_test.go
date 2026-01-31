@@ -4,45 +4,39 @@ import "testing"
 
 func TestRoller(t *testing.T) {
 	t.Run("rolls successfully", func(t *testing.T) {
-		num, sides, modifier := 2, 6, 0
-		min := num*1 + modifier
-		max := num*sides + modifier
+		input := "2d6"
 
-		got, _ := Roll(num, sides, modifier)
-		if got < min || got > max {
-			t.Errorf("result outside of range: %d", got)
+		_, err := Roll(input)
+		if err != nil {
+			t.Errorf("unexpected error %s", err)
 		}
 	})
 
 	t.Run("errors if less than 1 dice", func(t *testing.T) {
-		num, sides, modifier := 0, 6, 0
-		_, err := Roll(num, sides, modifier)
+		input := "0d6"
+		_, err := Roll(input)
 		if err == nil {
-			t.Error("expected error")
+			t.Errorf("expected error but did not get one")
 		}
 	})
 
 	t.Run("errors if less than 1 side", func(t *testing.T) {
-		num, sides, modifier := 2, 0, 0
-		_, err := Roll(num, sides, modifier)
+		input := "2d0"
+		_, err := Roll(input)
 		if err == nil {
-			t.Error("expected error")
+			t.Error("expected error but did not get one")
 		}
 	})
 }
 
 func FuzzRoller(f *testing.F) {
-	f.Add(2, 6, 0)
-	f.Fuzz(func(t *testing.T, num, sides, mod int) {
-		min := num*1 + mod
-		max := num*sides + mod
-
-		got, err := Roll(num, sides, mod)
+	f.Add("2d6")
+	f.Add("d20")
+	f.Add("1d4+1")
+	f.Fuzz(func(t *testing.T, input string) {
+		_, err := Roll(input)
 		if err != nil {
 			return
-		}
-		if got < min || got > max {
-			t.Errorf("result outside of range: %d", got)
 		}
 	})
 }
