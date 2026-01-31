@@ -29,6 +29,7 @@ tasks:
     sources:
       - "**/*.go"
       - go.mod
+      - exclude: cmd/**/*.go
 
   fuzz:
     vars:
