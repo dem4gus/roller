@@ -1,8 +1,11 @@
 package roller
 
 import (
+	"fmt"
 	"math/rand/v2"
 )
+
+const MAX_DICE = 9999
 
 type DiceSet struct {
 	num   int
@@ -22,6 +25,10 @@ func NewDiceSet(input string) (*DiceSet, error) {
 	num, sides, mod, err := parse(input)
 	if err != nil {
 		return nil, err
+	}
+
+	if num > MAX_DICE {
+		return nil, fmt.Errorf("max dice allowed is %d", MAX_DICE)
 	}
 
 	return &DiceSet{num, sides, mod}, nil

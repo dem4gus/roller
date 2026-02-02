@@ -27,6 +27,14 @@ func TestRoller(t *testing.T) {
 			t.Error("expected error but did not get one")
 		}
 	})
+
+	t.Run("only allows 9,999 dice maximum", func(t *testing.T) {
+		input := "10000d6"
+		_, err := Roll(input)
+		if err == nil {
+			t.Error("expected error but did not get one")
+		}
+	})
 }
 
 func FuzzRoller(f *testing.F) {
