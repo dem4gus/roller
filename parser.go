@@ -2,14 +2,8 @@ package roller
 
 import (
 	"errors"
-	"fmt"
 	"regexp"
 	"strconv"
-)
-
-const (
-	MIN_DICE = 1
-	MAX_DICE = 9999
 )
 
 func parse(input string) (num, sides, mod int, err error) {
@@ -24,7 +18,7 @@ func parse(input string) (num, sides, mod int, err error) {
 	}
 
 	if matches[1] == "" {
-		num = MIN_DICE
+		num = 1
 	} else {
 		var num64 int64
 		num64, err = strconv.ParseInt(matches[1], 0, 0)
@@ -33,20 +27,12 @@ func parse(input string) (num, sides, mod int, err error) {
 		}
 		num = int(num64)
 	}
-	if num < MIN_DICE || num > MAX_DICE {
-		err = fmt.Errorf("invalid number of dice in %s: %d", input, num)
-		return
-	}
 
 	sides64, err := strconv.ParseInt(matches[2], 0, 0)
 	if err != nil {
 		return
 	}
 	sides = int(sides64)
-	if sides < 1 {
-		err = fmt.Errorf("invalid number of sides in %s: %d", input, sides)
-		return
-	}
 
 	if matches[3] != "" {
 		var mod64 int64

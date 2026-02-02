@@ -3,9 +3,15 @@ package roller
 import (
 	"fmt"
 	"math/rand/v2"
+	"slices"
 )
 
-const MAX_DICE = 9999
+const (
+	MIN_NUM = 1
+	MAX_NUM = 10_000
+)
+
+var diceSizes = []int{4, 6, 8, 10, 12, 20, 100}
 
 type DiceSet struct {
 	num   int
@@ -26,9 +32,11 @@ func NewDiceSet(input string) (*DiceSet, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	if num > MAX_DICE {
-		return nil, fmt.Errorf("max dice allowed is %d", MAX_DICE)
+	if num < MIN_NUM || num > MAX_NUM {
+		return nil, fmt.Errorf("invalid number of dice in %s: %d", input, num)
+	}
+	if !slices.Contains(diceSizes, sides) {
+		return nil, fmt.Errorf("invalid number of sides in %s: %d", input, sides)
 	}
 
 	return &DiceSet{num, sides, mod}, nil

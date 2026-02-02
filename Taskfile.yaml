@@ -2,10 +2,6 @@
 
 version: "3"
 
-vars:
-  PROGRAM: roll
-  BUILD_DIR: build
-
 tasks:
   default:
     cmds:
@@ -15,13 +11,13 @@ tasks:
     cmds:
       - go mod tidy
       - task: test
-      - go build -o {{.BUILD_DIR}}/{{.PROGRAM}} cmd/main.go
+      - go build -o build/roll cmd/main.go
     sources:
       - "**/*.go"
       - go.mod
       - exclude: "**/*_test.go"
     generates:
-      - "{{.BUILD_DIR}}/{{.PROGRAM}}"
+      - "build/roll"
 
   test:
     cmds:
@@ -30,9 +26,3 @@ tasks:
       - "**/*.go"
       - go.mod
       - exclude: cmd/**/*.go
-
-  fuzz:
-    vars:
-      FUZZTIME: '{{.FUZZTIME | default "10s"}}'
-    cmds:
-      - go test -fuzz Fuzz -fuzztime {{.FUZZTIME}}

@@ -2,8 +2,8 @@ package roller
 
 import "testing"
 
-func TestParser(t *testing.T) {
-	happyPath := []struct {
+func TestParse(t *testing.T) {
+	for _, tt := range []struct {
 		name  string
 		input string
 		num   int
@@ -11,7 +11,13 @@ func TestParser(t *testing.T) {
 		mod   int
 	}{
 		{
-			name:  "single die",
+			name:  "explicit single die",
+			input: "1d6",
+			num:   1,
+			sides: 6,
+		},
+		{
+			name:  "implied single die",
 			input: "d6",
 			num:   1,
 			sides: 6,
@@ -36,15 +42,7 @@ func TestParser(t *testing.T) {
 			sides: 6,
 			mod:   -2,
 		},
-		{
-			name:  "max number of dice",
-			input: "9999d6",
-			num:   9999,
-			sides: 6,
-		},
-	}
-
-	for _, tt := range happyPath {
+	} {
 		t.Run(tt.name, func(t *testing.T) {
 			num, sides, mod, err := parse(tt.input)
 			if err != nil {
@@ -61,23 +59,22 @@ func TestParser(t *testing.T) {
 			}
 		})
 	}
+}
 
-	errorCases := []struct {
-		name  string
-		input string
-	}{
-		{
-			name:  "too many dice",
-			input: "10000d6",
-		},
+func FuzzParse(f *testing.F) {
+	for _, input := range []string{"1d6", "d6", "2d6", "2d6+2", "2d6-2"} {
+		f.Add(input)
 	}
-
-	for _, tt := range errorCases {
-		t.Run(tt.name, func(t *testing.T) {
-			_, _, _, err := parse(tt.input)
-			if err == nil {
-				t.Fatalf("expected error but got none")
-			}
-		})
-	}
+	f.Fuzz(func(t *testing.T, input string) {
+		num, sides, _, err := parse(input)
+		if num < 0 {
+			t.Errorf("num should not be negative")
+		}
+		if sides < 0 {
+			t.Errorf("sides should not be negative")
+		}
+		if err != nil {
+			return
+		}
+	})
 }
