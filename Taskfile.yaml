@@ -19,6 +19,12 @@ tasks:
     generates:
       - "build/roll"
 
+  lint:
+    cmd: golangci-lint run
+    sources:
+      - "**/*.go"
+      - ".golangci.toml"
+
   test:
     cmds:
       - go test -cover -v

@@ -86,7 +86,7 @@ func FuzzRoller(f *testing.F) {
 	f.Add("2d6")
 	f.Add("d20")
 	f.Add("1d4+1")
-	f.Fuzz(func(t *testing.T, input string) {
+	f.Fuzz(func(_ *testing.T, input string) {
 		_, err := Roll(input)
 		if err != nil {
 			return

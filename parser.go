@@ -14,7 +14,7 @@ func parse(input string) (num, sides, mod int, err error) {
 	matches := re.FindStringSubmatch(input)
 	if matches == nil {
 		err = errors.New("invalid input string")
-		return
+		return num, sides, mod, err
 	}
 
 	if matches[1] == "" {
@@ -23,14 +23,14 @@ func parse(input string) (num, sides, mod int, err error) {
 		var num64 int64
 		num64, err = strconv.ParseInt(matches[1], 0, 0)
 		if err != nil {
-			return
+			return num, sides, mod, err
 		}
 		num = int(num64)
 	}
 
 	sides64, err := strconv.ParseInt(matches[2], 0, 0)
 	if err != nil {
-		return
+		return num, sides, mod, err
 	}
 	sides = int(sides64)
 
@@ -38,10 +38,10 @@ func parse(input string) (num, sides, mod int, err error) {
 		var mod64 int64
 		mod64, err = strconv.ParseInt(matches[3], 0, 0)
 		if err != nil {
-			return
+			return num, sides, mod, err
 		}
 		mod = int(mod64)
 	}
 
-	return
+	return num, sides, mod, err
 }
